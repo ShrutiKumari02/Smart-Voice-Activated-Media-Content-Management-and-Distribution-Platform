@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://ai-voice-backend-0mt0.onrender.com/api';
 
 const api = {
     async request(endpoint, options = {}) {
