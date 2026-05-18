@@ -26,3 +26,6 @@ backend/uploads/*
 # System files
 .DS_Store
 Thumbs.db
+
+# Ignored Folders
+Docs/

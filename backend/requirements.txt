@@ -16,3 +16,4 @@ moviepy==1.0.3
 pyaudio==0.2.14
 langdetect==1.0.9
 deep-translator==1.11.4
+gunicorn==21.2.0
