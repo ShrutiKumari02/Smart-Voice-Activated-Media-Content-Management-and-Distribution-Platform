@@ -48,6 +48,6 @@ Once running, the application is accessible at **http://localhost:5000**. The ba
   - `css/style.css`: Application styling (dark theme).
   - `js/`: JavaScript modules (`api.js`, `charts.js`, `voice.js`, `main.js`).
 
-## Notes for Submission
-- The database (`backend/media_analytics.db`) is auto-seeded with realistic mock data on the first run so that charts and the library look fully populated for your demo.
-- If you want to reset the database, simply delete `media_analytics.db` and restart the server.
+
+
+
