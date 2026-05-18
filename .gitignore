@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables
+.env
+.env.local
+
+# Database (optional depending on if you want to push initial DB, but typically excluded)
+*.sqlite3
+*.db
+
+# Media uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# System files
+.DS_Store
+Thumbs.db

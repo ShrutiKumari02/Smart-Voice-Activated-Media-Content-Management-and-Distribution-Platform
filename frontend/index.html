@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="AI Voice-Controlled Media Management System — MCA Final Year Project. Upload, schedule, and analyze media using voice commands."/>
+  <title>VoiceMedia AI — Intelligent Media Management</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Local CSS -->
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="20" fill="url(#logoGrad)"/>
+        <path d="M14 20c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6z" fill="white" fill-opacity=".3"/>
+        <rect x="18" y="12" width="4" height="16" rx="2" fill="white"/>
+        <rect x="12" y="16" width="4" height="8" rx="2" fill="white" fill-opacity=".7"/>
+        <rect x="24" y="16" width="4" height="8" rx="2" fill="white" fill-opacity=".7"/>
+        <defs>
+          <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+            <stop offset="0%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#2563EB"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="logo-name">VoiceMedia</span>
+      <span class="logo-sub">AI Platform</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item active" data-page="dashboard" id="nav-dashboard">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" fill="currentColor"/><rect x="14" y="3" width="7" height="7" rx="1" fill="currentColor" opacity=".6"/><rect x="3" y="14" width="7" height="7" rx="1" fill="currentColor" opacity=".6"/><rect x="14" y="14" width="7" height="7" rx="1" fill="currentColor" opacity=".4"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" data-page="media" id="nav-media">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="19" cy="18" r="3" stroke="currentColor" stroke-width="2"/><path d="M18 18l1.5 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Media Library
+    </a>
+    <a class="nav-item" data-page="upload" id="nav-upload">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><path d="M12 16V8M8 12l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Upload
+    </a>
+    <a class="nav-item" data-page="schedule" id="nav-schedule">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Scheduler
+    </a>
+    <a class="nav-item" data-page="analytics" id="nav-analytics">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><path d="M3 20l5-8 4 4 4-6 5 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Analytics
+    </a>
+    <a class="nav-item" data-page="voice" id="nav-voice">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="12" rx="3" stroke="currentColor" stroke-width="2"/><path d="M5 10c0 3.9 3.1 7 7 7s7-3.1 7-7M12 17v5M8 22h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Voice AI
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="server-status" id="serverStatus">
+      <span class="status-dot"></span>
+      <span class="status-text">Connecting…</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════ MAIN -->
+<main class="main-content" id="mainContent">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <button class="sidebar-toggle" id="sidebarToggle">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="topbar-center" id="pageTitle">Dashboard</div>
+    <div class="topbar-right">
+      <button class="voice-fab" id="voiceFabTopbar" title="Voice Command">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="12" rx="3" fill="currentColor"/><path d="M5 10c0 3.9 3.1 7 7 7s7-3.1 7-7M12 17v5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ──────────────── PAGE: DASHBOARD ──────────────── -->
+  <section class="page active" id="page-dashboard">
+    <div class="page-header">
+      <h1>Welcome back 👋</h1>
+      <p>Here's what's happening with your media today.</p>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi-card" id="kpi-files">
+        <div class="kpi-icon" style="--c:#7C3AED">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8L14 2z" stroke="currentColor" stroke-width="2"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kv-files">—</span>
+          <span class="kpi-label">Total Files</span>
+        </div>
+        <div class="kpi-badge" id="kb-files">+0 this month</div>
+      </div>
+      <div class="kpi-card" id="kpi-views">
+        <div class="kpi-icon" style="--c:#2563EB">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kv-views">—</span>
+          <span class="kpi-label">Total Views</span>
+        </div>
+        <div class="kpi-badge">All time</div>
+      </div>
+      <div class="kpi-card" id="kpi-downloads">
+        <div class="kpi-icon" style="--c:#059669">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 15l-4-4h3V3h2v8h3l-4 4z" fill="currentColor"/><path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kv-downloads">—</span>
+          <span class="kpi-label">Downloads</span>
+        </div>
+        <div class="kpi-badge">All time</div>
+      </div>
+      <div class="kpi-card" id="kpi-voice">
+        <div class="kpi-icon" style="--c:#DC2626">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="12" rx="3" stroke="currentColor" stroke-width="2"/><path d="M5 10c0 3.9 3.1 7 7 7s7-3.1 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kv-voice">—</span>
+          <span class="kpi-label">Voice Commands</span>
+        </div>
+        <div class="kpi-badge">Logged</div>
+      </div>
+      <div class="kpi-card" id="kpi-storage">
+        <div class="kpi-icon" style="--c:#D97706">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="1.5" fill="currentColor"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kv-storage">—</span>
+          <span class="kpi-label">Storage (MB)</span>
+        </div>
+        <div class="kpi-badge">Used</div>
+      </div>
+      <div class="kpi-card" id="kpi-tasks">
+        <div class="kpi-icon" style="--c:#0891B2">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kv-tasks">—</span>
+          <span class="kpi-label">Pending Tasks</span>
+        </div>
+        <div class="kpi-badge">Scheduled</div>
+      </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="charts-row">
+      <div class="chart-card wide">
+        <div class="chart-card-header">
+          <h3>Activity Overview</h3>
+          <span class="chart-period">Last 30 days</span>
+        </div>
+        <canvas id="chartActivity" height="220"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <h3>Media Types</h3>
+        </div>
+        <canvas id="chartTypes" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- Top Media Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <h3>🔥 Top Performing Media</h3>
+      </div>
+      <div class="table-wrap">
+        <table id="topMediaTable">
+          <thead>
+            <tr>
+              <th>#</th><th>Name</th><th>Type</th><th>Category</th>
+              <th>Views</th><th>Downloads</th><th>Uploaded</th>
+            </tr>
+          </thead>
+          <tbody id="topMediaBody">
+            <tr><td colspan="7" class="loading-row">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── PAGE: MEDIA LIBRARY ──────────────── -->
+  <section class="page" id="page-media">
+    <div class="page-header">
+      <h1>Media Library</h1>
+      <p>Browse, search, and manage all your media files.</p>
+    </div>
+
+    <div class="media-controls">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="mediaSearch" placeholder="Search files…" autocomplete="off"/>
+      </div>
+      <div class="filter-group">
+        <select id="filterType" class="filter-select">
+          <option value="">All Types</option>
+          <option value="video">Video</option>
+          <option value="audio">Audio</option>
+          <option value="image">Image</option>
+          <option value="document">Document</option>
+        </select>
+        <select id="filterCategory" class="filter-select">
+          <option value="">All Categories</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Education">Education</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="News">News</option>
+          <option value="Sports">Sports</option>
+        </select>
+        <button class="btn-primary" id="mediaSearchBtn">Search</button>
+      </div>
+    </div>
+
+    <div class="media-grid" id="mediaGrid">
+      <div class="loading-spinner"><div class="spinner"></div><p>Loading media…</p></div>
+    </div>
+  </section>
+
+  <!-- ──────────────── PAGE: UPLOAD ──────────────── -->
+  <section class="page" id="page-upload">
+    <div class="page-header">
+      <h1>Upload Media</h1>
+      <p>Add new content to your media library — or use the microphone.</p>
+    </div>
+
+    <div class="upload-layout">
+      <!-- Drop Zone -->
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-zone-inner">
+          <div class="upload-zone-icon">
+            <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="32" fill="url(#uploadGrad)"/><path d="M32 42V26M24 34l8-8 8 8" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 46h24" stroke="white" stroke-width="3" stroke-linecap="round"/><defs><linearGradient id="uploadGrad" x1="0" y1="0" x2="64" y2="64"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#2563EB"/></linearGradient></defs></svg>
+          </div>
+          <h3>Drop files here</h3>
+          <p>or click to browse</p>
+          <p class="upload-hint">Supports: MP4, AVI, MP3, WAV, PNG, JPG, PDF, DOCX (max 500 MB)</p>
+          <input type="file" id="fileInput" multiple accept="video/*,audio/*,image/*,.pdf,.docx,.pptx,.xlsx" hidden/>
+          <button class="btn-primary" id="browseBtn">Browse Files</button>
+        </div>
+      </div>
+
+      <!-- Upload Form -->
+      <div class="upload-form-card">
+        <h3>File Details</h3>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="uploadCategory" class="form-control">
+            <option value="General">General</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Education">Education</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="News">News</option>
+            <option value="Sports">Sports</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tags <span class="form-hint">(comma separated)</span></label>
+          <input type="text" id="uploadTags" class="form-control" placeholder="e.g. promo, 2024, campaign"/>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="uploadDesc" class="form-control" rows="3" placeholder="Brief description of the file…"></textarea>
+        </div>
+        <button class="btn-primary full-width" id="uploadBtn" disabled>Upload Files</button>
+        <div class="upload-progress-wrap" id="uploadProgressWrap" style="display:none">
+          <div class="upload-progress-bar" id="uploadProgressBar"></div>
+          <span id="uploadProgressText">Uploading…</span>
+        </div>
+        <div id="uploadResult" class="upload-result"></div>
+      </div>
+    </div>
+
+    <!-- Upload Queue -->
+    <div class="upload-queue" id="uploadQueue" style="display:none">
+      <h3>Selected Files</h3>
+      <ul id="uploadQueueList"></ul>
+    </div>
+  </section>
+
+  <!-- ──────────────── PAGE: SCHEDULER ──────────────── -->
+  <section class="page" id="page-schedule">
+    <div class="page-header">
+      <h1>Media Scheduler</h1>
+      <p>Plan and automate your media operations.</p>
+    </div>
+
+    <div class="schedule-layout">
+      <!-- Add Task Form -->
+      <div class="schedule-form-card">
+        <h3>➕ New Scheduled Task</h3>
+        <div class="form-group">
+          <label>Task Name</label>
+          <input type="text" id="sTaskName" class="form-control" placeholder="e.g. Publish Campaign Video"/>
+        </div>
+        <div class="form-group">
+          <label>Media ID <span class="form-hint">(optional)</span></label>
+          <input type="number" id="sMediaId" class="form-control" placeholder="File ID from Media Library"/>
+        </div>
+        <div class="form-group">
+          <label>Action</label>
+          <select id="sAction" class="form-control">
+            <option value="publish">Publish</option>
+            <option value="archive">Archive</option>
+            <option value="notify">Notify</option>
+            <option value="delete">Delete</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Scheduled Date & Time</label>
+          <input type="datetime-local" id="sDateTime" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="sNotes" class="form-control" rows="2" placeholder="Optional notes…"></textarea>
+        </div>
+        <button class="btn-primary full-width" id="addTaskBtn">Schedule Task</button>
+        <div id="scheduleResult" class="upload-result"></div>
+      </div>
+
+      <!-- Tasks List -->
+      <div class="tasks-panel">
+        <div class="tasks-header">
+          <h3>📋 All Scheduled Tasks</h3>
+          <button class="btn-ghost" id="refreshTasksBtn">Refresh</button>
+        </div>
+        <div id="tasksList" class="tasks-list">
+          <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── PAGE: ANALYTICS ──────────────── -->
+  <section class="page" id="page-analytics">
+    <div class="page-header">
+      <h1>Analytics</h1>
+      <p>Deep insights into your media performance and voice activity.</p>
+    </div>
+
+    <div class="analytics-charts">
+      <!-- Row 1 -->
+      <div class="chart-card wide">
+        <div class="chart-card-header">
+          <h3>📈 Uploads Over Time</h3>
+          <span class="chart-period">Last 30 days</span>
+        </div>
+        <canvas id="chartUploads" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><h3>🗂️ Media by Category</h3></div>
+        <canvas id="chartCategory" height="200"></canvas>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="chart-card wide">
+        <div class="chart-card-header">
+          <h3>👁️ Views vs Downloads (Top 10)</h3>
+        </div>
+        <canvas id="chartViewsDownloads" height="220"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><h3>💾 Storage by Type (MB)</h3></div>
+        <canvas id="chartStorage" height="220"></canvas>
+      </div>
+
+      <!-- Row 3 — Voice Stats -->
+      <div class="chart-card">
+        <div class="chart-card-header"><h3>🎙️ Voice Intent Distribution</h3></div>
+        <canvas id="chartVoiceIntents" height="220"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><h3>🌐 Voice Language Breakdown</h3></div>
+        <canvas id="chartVoiceLangs" height="220"></canvas>
+      </div>
+
+      <!-- Voice metrics strip -->
+      <div class="voice-metrics-strip" id="voiceMetricsStrip">
+        <div class="vm-metric"><span class="vm-val" id="vm-accuracy">—</span><span class="vm-label">Accuracy %</span></div>
+        <div class="vm-metric"><span class="vm-val" id="vm-total">—</span><span class="vm-label">Commands</span></div>
+        <div class="vm-metric"><span class="vm-val" id="vm-success">—</span><span class="vm-label">Success %</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────── PAGE: VOICE AI ──────────────── -->
+  <section class="page" id="page-voice">
+    <div class="page-header">
+      <h1>Voice AI Control</h1>
+      <p>Speak naturally — the system understands your intent.</p>
+    </div>
+
+    <div class="voice-layout">
+      <!-- Voice Panel -->
+      <div class="voice-panel">
+        <div class="voice-orb-container">
+          <div class="voice-orb" id="voiceOrb">
+            <div class="orb-ring r1"></div>
+            <div class="orb-ring r2"></div>
+            <div class="orb-ring r3"></div>
+            <div class="orb-core">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="12" rx="3" fill="white"/><path d="M5 10c0 3.9 3.1 7 7 7s7-3.1 7-7M12 17v5M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="voice-status" id="voiceStatus">Click the orb to start listening</div>
+
+        <div class="voice-transcript-box">
+          <div class="vtb-label">Transcript</div>
+          <div class="vtb-content" id="voiceTranscript">—</div>
+        </div>
+
+        <div class="voice-response-box">
+          <div class="vtb-label">System Response</div>
+          <div class="vtb-content response" id="voiceResponse">—</div>
+        </div>
+
+        <div class="voice-intent-bar" id="voiceIntentBar" style="display:none">
+          <div class="vib-item"><span class="vib-label">Intent</span><span class="vib-val" id="vib-intent">—</span></div>
+          <div class="vib-item"><span class="vib-label">Language</span><span class="vib-val" id="vib-lang">—</span></div>
+          <div class="vib-item"><span class="vib-label">Confidence</span><span class="vib-val" id="vib-conf">—</span></div>
+        </div>
+
+        <!-- Manual input fallback -->
+        <div class="voice-manual">
+          <input type="text" id="voiceTextInput" class="form-control" placeholder="Or type a command…"/>
+          <button class="btn-primary" id="voiceTextSendBtn">Send</button>
+        </div>
+      </div>
+
+      <!-- Commands Reference -->
+      <div class="commands-panel">
+        <h3>📖 Command Reference</h3>
+        <div id="commandsGrid" class="commands-grid">
+          <!-- injected by JS -->
+        </div>
+        <div class="lang-support">
+          <h4>🌐 Supported Languages</h4>
+          <div class="lang-chips">
+            <span class="lang-chip">🇬🇧 English</span>
+            <span class="lang-chip">🇮🇳 Hindi</span>
+          </div>
+        </div>
+
+        <!-- Voice History -->
+        <h3 style="margin-top:2rem">🕒 Recent Commands</h3>
+        <div id="voiceHistoryList" class="voice-history-list">
+          <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════ VOICE FAB (fixed) -->
+<button class="voice-fab-fixed" id="voiceFabFixed" title="Voice Command">
+  <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="12" rx="3" fill="white"/><path d="M5 10c0 3.9 3.1 7 7 7s7-3.1 7-7M12 17v5M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+</button>
+
+<!-- ═══════════════════════════════════════════ TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ═══════════════════════════════════════════ MODAL: Media Detail -->
+<div class="modal-overlay" id="mediaModal" style="display:none">
+  <div class="modal-card">
+    <button class="modal-close" id="mediaModalClose">✕</button>
+    <h2 id="modalTitle">File Details</h2>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn-danger" id="modalDeleteBtn">Delete File</button>
+      <button class="btn-ghost" id="mediaModalClose2">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- JS -->
+<script src="js/api.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
